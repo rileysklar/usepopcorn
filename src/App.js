@@ -57,37 +57,47 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("the matrix");
+  const [selectedID, setSelectedID] = useState("tt0133093");
 
-  const query = "matrix";
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setIsLoading(true);
+          setError("");
+          const res = await fetch(
+            `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          );
 
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-        );
+          if (!res.ok) throw new Error("Failed to fetch movies");
 
-        if (!res.ok) throw new Error("Failed to fetch movies");
-        const data = await res.json();
-        if (data.Response === "False") throw new Error(data.Error);
+          const data = await res.json();
+          if (data.Response === "False") throw new Error("Movie not found");
 
-        setMovies(data.Search);
-      } catch (err) {
-        console.log(err.message);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
+          setMovies(data.Search);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
-    fetchMovies();
-  }, []);
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+
+      fetchMovies();
+    },
+    [query]
+  );
 
   return (
     <>
       <NavBar>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResults movies={movies} />
       </NavBar>
       <Main>
@@ -97,10 +107,14 @@ export default function App() {
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <>
-            <WatchedSummary watched={watched} />
-            <WatchedMovieList watched={watched} />
-          </>
+          {selectedID ? (
+            <MovieDetails selectedID={selectedID} />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMovieList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
@@ -133,8 +147,7 @@ function Logo() {
   );
 }
 
-function Search() {
-  const [query, setQuery] = useState("");
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
@@ -190,31 +203,13 @@ function Movie({ movie }) {
           <span>🗓</span>
           <span>{movie.Year}</span>
         </p>
-        {/* <a
-          role="button"
-          className="imdb"
-          href={`https://www.imdb.com/find/?q=${encodeURIComponent(
-            movie.Title
-          )}`}
-          style={{
-            textDecoration: "none",
-            color: "#000000",
-            backgroundColor: "#f5c519",
-            border: "none",
-            padding: "8px 4px",
-            borderRadius: "4px",
-            fontWeight: "900",
-            fontFamily: '"Roboto", sans-serif',
-            letterSpacing: "1px",
-            lineHeight: "5px",
-            cursor: "pointer",
-          }}
-        >
-          IMDb
-        </a> */}
       </div>
     </li>
   );
+}
+
+function MovieDetails({ selectedID }) {
+  return <div className="detail">${selectedID}</div>;
 }
 
 function WatchedSummary({ watched }) {
