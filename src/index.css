@@ -18,6 +18,10 @@
 
 html {
   font-size: 62.5%;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard syntax */
 }
 
 body {
@@ -221,8 +225,6 @@ body {
   background-color: var(--color-red-dark);
 }
 
-/* ******* */
-
 .summary {
   padding: 2.2rem 3.2rem 1.8rem 3.2rem;
   border-radius: 0.9rem;
@@ -362,3 +364,25 @@ SPACING SYSTEM (px)
 FONT SIZE SYSTEM (px)
 10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 /52 / 62 / 74 / 86 / 98
 */
+/* @media only screen and (max-width: 768px) {
+  .main {
+    flex-direction: column;
+    height: 300px;
+  }
+  .box {
+    height: 300px;
+  }
+
+  .nav-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    padding: 12px;
+    width: 100%;
+  }
+
+  .search {
+    width: 100%;
+  }
+} */
