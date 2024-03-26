@@ -58,7 +58,7 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("the matrix");
+  const [query, setQuery] = useState("Star Wars");
   const [selectedID, setSelectedID] = useState(null);
 
   function handleSelectMovie(id) {
@@ -67,6 +67,10 @@ export default function App() {
 
   function handleCloseMovie() {
     setSelectedID(null);
+  }
+
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
   }
 
   useEffect(
@@ -122,6 +126,7 @@ export default function App() {
             <MovieDetails
               selectedID={selectedID}
               onCloseMovie={handleCloseMovie}
+              onAddWatched={handleAddWatched}
             />
           ) : (
             <>
