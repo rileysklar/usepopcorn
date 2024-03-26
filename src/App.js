@@ -261,7 +261,6 @@ function MovieDetails({ selectedID, onCloseMovie }) {
     },
     [selectedID]
   );
-  console.log(selectedID);
 
   return (
     <div className="details">
